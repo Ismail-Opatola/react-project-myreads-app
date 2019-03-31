@@ -1,4 +1,5 @@
 import React from 'react'
+import OpenSearch from './openSearch';
 
 const shelf = ({books}) => {
     console.log("Shelf Component received books as props: ", books)
@@ -160,8 +161,8 @@ const shelf = ({books}) => {
         </div>
       </div>
     </div>
-    <div className="open-search">
-      <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>
+    <div>
+        <OpenSearch to='/search'>Add a book</OpenSearch>
     </div>
   </div>
   )
