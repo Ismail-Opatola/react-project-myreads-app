@@ -1,8 +1,9 @@
-import React from 'react'
-import * as BooksAPI from './BooksAPI'
-import Shelf  from './components/shelf'
-import './App.css'
-import SearchBooks from './components/searchBooks';
+import React from "react";
+import { Route } from "react-router-dom";
+import * as BooksAPI from "./BooksAPI";
+import Shelf from "./components/shelf";
+import "./App.css";
+import SearchBooks from "./components/searchBooks";
 
 class BooksApp extends React.Component {
   state = {
@@ -14,36 +15,34 @@ class BooksApp extends React.Component {
      */
     // showSearchPage: false
     books: []
-  }
+  };
 
   componentDidMount() {
-
     BooksAPI.getAll()
       .then(books =>
         this.setState(() => ({
           books
         }))
       )
-      .then(() => { console.log("getAllBooksUpdateToState:", this.state) })
-      .catch((err) => {
-        throw new Error('BooksAPI.getAll: ' + err);
+      .then(() => {
+        console.log("getAllBooksUpdateToState:", this.state);
       })
+      .catch(err => {
+        throw new Error("BooksAPI.getAll: " + err);
+      });
   }
 
   render() {
-    const { books } = this.state
-    console.log("CurrentStateAfterGetAll:", books)
+    const { books } = this.state;
+    console.log("CurrentStateAfterGetAll:", books);
 
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <SearchBooks />
-        ) : (
-          <Shelf books={books} />
-        )}
+        <Route exact path="/" render={() => <Shelf books={books} />} />
+        <Route path="/search" render={() => <SearchBooks />} />
       </div>
-    )
+    );
   }
 }
 
-export default BooksApp
+export default BooksApp;
