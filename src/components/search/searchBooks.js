@@ -2,7 +2,7 @@ import React from "react";
 import SearchResults from "./searchResults";
 import SearchBar from "./searchBar";
 
-const search = () => {
+const searchBooks = () => {
   return (
     <div className="search-books">
       <SearchBar />
@@ -11,4 +11,4 @@ const search = () => {
   );
 };
 
-export default search;
+export default searchBooks;

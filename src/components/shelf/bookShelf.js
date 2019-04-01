@@ -1,15 +1,72 @@
-import React from 'react'
-import OpenSearch from './openSearch';
+import React from "react";
+import OpenSearch from "../openSearch";
+import Books from "./books";
+// import BookShelfTitle from './shelf/bookShelfTitle';
 
+const bookShelf = ({ books }) => {
+  console.log("Shelf Component received books as props: ", books);
+
+  const currentlyReading = books.filter(
+    book => book.shelf === "currentlyReading"
+  );
+  const wantToRead = books.filter(book => book.shelf === "wantToRead");
+  const read = books.filter(book => book.shelf === "read");
+
+  return (
+    <div className="list-books">
+      <div className="list-books-title">
+        <h1>MyReads</h1>
+      </div>
+      <div className="list-books-content">
+        <div>
+          <div className="bookshelf">
+            <h2 className="bookshelf-title">Currently Reading</h2>
+            <div className="bookshelf-books">
+              <ol className="books-grid">
+                <Books books={currentlyReading} />
+              </ol>
+            </div>
+          </div>
+          <div className="bookshelf">
+            <h2 className="bookshelf-title">Want to Read</h2>
+            <div className="bookshelf-books">
+              <ol className="books-grid">
+                <Books books={wantToRead} />
+              </ol>
+            </div>
+          </div>
+          <div className="bookshelf">
+            <h2 className="bookshelf-title">Read</h2>
+            <div className="bookshelf-books">
+              <ol className="books-grid">
+                <Books books={read} />
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <OpenSearch to="/search">Add a book</OpenSearch>
+      </div>
+    </div>
+  );
+};
+
+export default bookShelf;
+
+/** 
 const shelf = ({books}) => {
     console.log("Shelf Component received books as props: ", books)
+    // const g = books.map((book) => {
+    //     if(books.self)
+    // })
 
   return (
       
     <div className="list-books">
-    <div className="list-books-title">
-      <h1>MyReads</h1>
-    </div>
+      <div className="list-books-title">
+        <h1>MyReads</h1>
+      </div>
     <div className="list-books-content">
       <div>
         <div className="bookshelf">
@@ -170,3 +227,4 @@ const shelf = ({books}) => {
 
 export default shelf
 
+*/

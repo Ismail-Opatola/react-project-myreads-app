@@ -1,9 +1,9 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import * as BooksAPI from "./BooksAPI";
-import Shelf from "./components/shelf";
+import BookShelf from "./components/shelf/bookShelf";
 import "./App.css";
-import SearchBooks from "./components/searchBooks";
+import SearchBooks from "./components/search/searchBooks";
 
 class BooksApp extends React.Component {
   state = {
@@ -35,11 +35,18 @@ class BooksApp extends React.Component {
   render() {
     const { books } = this.state;
     console.log("CurrentStateAfterGetAll:", books);
+    const isLoading = books.length === 0 && (
+      <div className="isLoading">Loading...</div>
+    );
 
     return (
       <div className="app">
-        <Route exact path="/" render={() => <Shelf books={books} />} />
-        <Route exact path="/search" render={() => <SearchBooks />} />
+        {isLoading || (
+          <>
+            <Route exact path="/" render={() => <BookShelf books={books} />} />
+            <Route exact path="/search" render={() => <SearchBooks />} />
+          </>
+        )}
       </div>
     );
   }
