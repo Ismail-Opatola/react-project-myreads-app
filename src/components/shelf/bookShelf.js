@@ -5,15 +5,14 @@ import Books from "./books";
 
 const bookShelf = ({ books }) => {
   console.log("Shelf Component received books as props: ", books);
-  
-  const nfilter = (els, str) => {
-    return els.filter(el => el.shelf === str)
+
+  const nfilter = str => {
+    return books.filter(book => book.shelf === str);
   };
 
-  const currentlyReading = nfilter(books, 'currentlyReading')
-  const wantToRead = nfilter(books, 'wantToRead')
-  const read = nfilter(books, 'read')
- 
+  const currentlyReading = nfilter("currentlyReading");
+  const wantToRead = nfilter("wantToRead");
+  const read = nfilter("read");
 
   return (
     <div className="list-books">

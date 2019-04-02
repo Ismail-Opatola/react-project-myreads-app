@@ -31,7 +31,7 @@ const books = ({ books }) => {
         </div>
         <div className="book-title">{book.title}</div>
         {book.authors.map(author =>
-          <div className="book-authors">{author}</div>
+          <div className="book-authors" key={author}>{author}</div>
         )}
       </div>
     </li>
