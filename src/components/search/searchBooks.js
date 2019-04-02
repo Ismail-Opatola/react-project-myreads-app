@@ -12,3 +12,6 @@ const searchBooks = () => {
 };
 
 export default searchBooks;
+
+// TODO: handle SearchBar Query
+// TODO: handle SearchResult Books render (receive props )

@@ -1,5 +1,7 @@
 import React from "react";
 
+// TODO: Handle Select Options functionality
+
 const books = ({ books }) => {
   console.log("Books Component received books as props: ", books);
 
@@ -28,7 +30,9 @@ const books = ({ books }) => {
           </div>
         </div>
         <div className="book-title">{book.title}</div>
-        <div className="book-authors">{book.author}</div>
+        {book.authors.map(author =>
+          <div className="book-authors">{author}</div>
+        )}
       </div>
     </li>
   ));
@@ -61,3 +65,4 @@ export default books;
         </ol>
     </div>
 */
+
