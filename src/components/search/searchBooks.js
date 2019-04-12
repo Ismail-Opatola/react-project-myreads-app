@@ -2,11 +2,11 @@ import React from "react";
 import SearchResults from "./searchResults";
 import SearchBar from "./searchBar";
 
-const searchBooks = () => {
+const searchBooks = ({books, switcher, searcher}) => {
   return (
     <div className="search-books">
-      <SearchBar />
-      <SearchResults />
+      <SearchBar search={searcher}/>
+      <SearchResults books={books} switchShelf={switcher}/>
     </div>
   );
 };

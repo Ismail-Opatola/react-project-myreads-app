@@ -3,7 +3,7 @@ import OpenSearch from "../openSearch";
 import Books from "./books";
 // import BookShelfTitle from './shelf/bookShelfTitle';
 
-const bookShelf = ({ books }) => {
+const bookShelf = ({ books, switcher }) => {
   console.log("Shelf Component received books as props: ", books);
 
   const nfilter = str => {
@@ -25,7 +25,7 @@ const bookShelf = ({ books }) => {
             <h2 className="bookshelf-title">Currently Reading</h2>
             <div className="bookshelf-books">
               <ol className="books-grid">
-                <Books books={currentlyReading} />
+                <Books books={currentlyReading} switchShelf={switcher}/>
               </ol>
             </div>
           </div>
@@ -33,7 +33,7 @@ const bookShelf = ({ books }) => {
             <h2 className="bookshelf-title">Want to Read</h2>
             <div className="bookshelf-books">
               <ol className="books-grid">
-                <Books books={wantToRead} />
+                <Books books={wantToRead} switchShelf={switcher}/>
               </ol>
             </div>
           </div>
@@ -41,7 +41,7 @@ const bookShelf = ({ books }) => {
             <h2 className="bookshelf-title">Read</h2>
             <div className="bookshelf-books">
               <ol className="books-grid">
-                <Books books={read} />
+                <Books books={read} switchShelf={switcher}/>
               </ol>
             </div>
           </div>
