@@ -1,12 +1,12 @@
 import React from "react";
 import SearchResults from "./searchResults";
-import SearchBar from "./searchBar";
+import {searchBar as SearchBar} from "./searchBar";
 
-const searchBooks = ({books, switcher, searcher}) => {
+const searchBooks = ({ books, switcherShelf, searcher, CloseSearchPage }) => {
   return (
     <div className="search-books">
-      <SearchBar search={searcher}/>
-      <SearchResults books={books} switchShelf={switcher}/>
+      <SearchBar search={searcher} CloseSearchPage={CloseSearchPage} />
+      <SearchResults books={books} switchShelf={switcherShelf} />
     </div>
   );
 };

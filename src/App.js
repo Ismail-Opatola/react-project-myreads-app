@@ -4,24 +4,20 @@ import * as BooksAPI from "./BooksAPI";
 import BookShelf from "./components/shelf/bookShelf";
 import "./App.css";
 import SearchBooks from "./components/search/searchBooks";
+import {searchTerms} from './components/search/searchBar';
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    // showSearchPage: false
-    books: []
+    books: [],
+    searchResults: []
   };
 
   componentDidMount() {
     BooksAPI.getAll()
-      .then(books =>
+      .then(bks =>
         this.setState(() => ({
-          books
+          books: [...bks],
+          searchResults: []
         }))
       )
       .then(() => {
@@ -32,25 +28,9 @@ class BooksApp extends React.Component {
       });
   }
 
-  handleShelfSwitcher = (book, e) => {
-    e.preventDefault();
-    console.log("handleShelfSwitcher e value:", e.target.value);
-    const shelf = e.target.value;
-
-    BooksAPI.update(book, shelf)
-      .then(res => {
-        this.setState((state, props) => ({
-          books: [...this.xtract(state, res)]
-        }));
-      })
-      .catch(err => {
-        throw new Error("BooksAPI.update: " + err.stack);
-      });
-  };
-
-  xtract = (state, res) => {
+  xtract = (books, res) => {
     const { currentlyReading, read, wantToRead } = res;
-    const books = state.books.filter(bk => {
+    const bks = books.filter(bk => {
       if (currentlyReading.length && currentlyReading.includes(bk.id)) {
         bk.shelf = "currentlyReading";
         return bk;
@@ -64,36 +44,10 @@ class BooksApp extends React.Component {
       return bk;
     });
     console.log("x-books:", books);
-    return books;
+    return bks;
   };
-
-  handleSearch = e => {
-    e.preventDefault();
-
-    if(e.target.value.trim() === ""){
-      return false;
-    }	
-    let query;
-    if (e.target.value.length) {
-      query = e.target.value.trim();
-    }
-
-    BooksAPI.search(query)
-      .then(res => {
-        this.setState(({books}) => {
-          let x = this.xtractr(books, res)
-          return {
-            books: [...x]
-          }
-        })
-      })
-      .catch(err => {
-        throw new Error("BooksAPI.search", err.stack);
-      });
-  };
-
-  xtractr = (books, res) => {
-
+  
+  xtractSearchResult = (books, res) => {
     let xrs = res.reduce((acc, curr) => {
       let add = books.find(bk => bk.id === curr.id);
       if (add) {
@@ -108,8 +62,92 @@ class BooksApp extends React.Component {
     return xrs;
   };
 
+  resetSR = () => {
+    this.setState(state => ({
+      searchResults: []
+    }));
+  }
+
+  handleCloseSearch = () => {
+    this.resetSR()
+    this.shouldComponentUpdate()
+  };
+
+  handleSwitcherFromSRPage = async(book, e) => {
+    e.preventDefault();
+    console.log("handleSwitchSRPage e value:", e.target.value);
+    const shelf = e.target.value;
+
+    try {
+      const res = await BooksAPI.update(book, shelf)
+      await this.setState(state => {
+        // books: [...this.xtract(state.books, res), book]
+        const bk = [...this.xtract(state.books, res)]
+        if (bk.includes(book)) {
+          console.log("state includes this book", book)
+          return {books: [...bk]}
+        } else if (!bk.includes(book)) {
+          console.log("state does not includes this book", book)
+          return {books: [book, ...state.books]}
+        }
+      });
+    } catch(err) {
+      throw new Error("BooksAPI.updateSwitch SRPage: " + err.stack);
+    }
+  }
+
+  handleShelfSwitcher = (book, e) => {
+    e.preventDefault();
+    console.log("handleShelfSwitcher e value:", e.target.value);
+    const shelf = e.target.value;
+    if (shelf === 'none') {
+      this.setState(state => ({
+        books: state.books.filter(bk => bk !== book)
+      }))
+    } else {
+      BooksAPI.update(book, shelf)
+        .then(res => {
+          this.setState(state => ({
+            books: [...this.xtract(state.books, res)]
+          }));
+        })
+        .catch(err => {
+          throw new Error("BooksAPI.update: " + err.stack);
+        });
+    }
+  };
+
+  handleSearch = e => {
+    e.preventDefault();
+
+    if (e.target.value.trim() === "") {
+      return false;
+    }
+    if (!searchTerms.includes(e.target.value)) {
+      return null;
+    }
+    let query;
+    if (e.target.value.length) {
+      query = e.target.value.trim();
+    }
+
+    BooksAPI.search(query)
+      .then(res => {
+        this.setState(state => {
+          let x = this.xtractSearchResult(state.books, res);
+          return {
+            books: [...state.books],
+            searchResults: [...x]
+          };
+        });
+      })
+      .catch(err => {
+        throw new Error("BooksAPI.search", err.stack);
+      });
+  };
+
   render() {
-    const { books } = this.state;
+    const { books, searchResults } = this.state;
 
     const isLoading = books.length === 0 && (
       <div className="isLoading">Loading...</div>
@@ -131,9 +169,10 @@ class BooksApp extends React.Component {
               path="/search"
               render={() => (
                 <SearchBooks
-                  books={books}
-                  switcher={this.handleShelfSwitcher}
+                  books={searchResults}
+                  switcherShelf={this.handleSwitcherFromSRPage}
                   searcher={this.handleSearch}
+                  CloseSearchPage={this.handleCloseSearch}
                 />
               )}
             />
@@ -147,33 +186,33 @@ class BooksApp extends React.Component {
 export default BooksApp;
 
 // x = (state, res) => {
-  //   let { books } = state
+//   let { books } = state
 
-  //   let xrs = res.reduce((acc, curr) => {
+//   let xrs = res.reduce((acc, curr) => {
 
-  //     let add = books.find(bk => bk.id === curr.id)
-  //     if(!add) {
-  //       acc[curr.id] = curr
-  //     }
-  //     return acc
-  //   }, {})
+//     let add = books.find(bk => bk.id === curr.id)
+//     if(!add) {
+//       acc[curr.id] = curr
+//     }
+//     return acc
+//   }, {})
 
-  //   // console.log("xrs:", xrs)
-  //   // console.log("Obj-xrs:", Object.values(xrs))
-  //   // let xmm = Object.values(xrs)
-  //   return xrs
-  // }
+//   // console.log("xrs:", xrs)
+//   // console.log("Obj-xrs:", Object.values(xrs))
+//   // let xmm = Object.values(xrs)
+//   return xrs
+// }
 
-  // xtractr = (books, res) => {
-  //   // let { books } = state;
+// xtractr = (books, res) => {
+//   // let { books } = state;
 
-  //   let xrs = res.reduce((acc, curr) => {
-  //     let add = books.find(bk => bk.id === curr.id);
-  //     if (!add) {
-  //       acc.push(curr);
-  //     }
-  //     return acc;
-  //   }, []);
+//   let xrs = res.reduce((acc, curr) => {
+//     let add = books.find(bk => bk.id === curr.id);
+//     if (!add) {
+//       acc.push(curr);
+//     }
+//     return acc;
+//   }, []);
 
-  //   return xrs;
-  // };
+//   return xrs;
+// };
