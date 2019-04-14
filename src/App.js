@@ -5,6 +5,7 @@ import BookShelf from "./components/shelf/bookShelf";
 import "./App.css";
 import SearchBooks from "./components/search/searchBooks";
 import {searchTerms} from './components/search/searchBar';
+// import MessageBox from './components/messageBox'
 
 class BooksApp extends React.Component {
   state = {
@@ -20,13 +21,16 @@ class BooksApp extends React.Component {
           searchResults: []
         }))
       )
-      .then(() => {
-        console.log("getAllBooksUpdateToState:", this.state);
-      })
       .catch(err => {
         throw new Error("BooksAPI.getAll: " + err.stack);
       });
+
+      // this.message('Welcome')
   }
+
+  // message = (msg) => {
+  //   return <MessageBox message={msg} /> 
+  // }
 
   xtract = (books, res) => {
     const { currentlyReading, read, wantToRead } = res;
@@ -75,13 +79,11 @@ class BooksApp extends React.Component {
 
   handleSwitcherFromSRPage = async(book, e) => {
     e.preventDefault();
-    console.log("handleSwitchSRPage e value:", e.target.value);
     const shelf = e.target.value;
 
     try {
       const res = await BooksAPI.update(book, shelf)
       await this.setState(state => {
-        // books: [...this.xtract(state.books, res), book]
         const bk = [...this.xtract(state.books, res)]
         if (bk.includes(book)) {
           console.log("state includes this book", book)
@@ -98,7 +100,6 @@ class BooksApp extends React.Component {
 
   handleShelfSwitcher = (book, e) => {
     e.preventDefault();
-    console.log("handleShelfSwitcher e value:", e.target.value);
     const shelf = e.target.value;
     if (shelf === 'none') {
       this.setState(state => ({
@@ -120,11 +121,8 @@ class BooksApp extends React.Component {
   handleSearch = e => {
     e.preventDefault();
 
-    if (e.target.value.trim() === "") {
+    if (e.target.value.trim() === "" || !searchTerms.includes(e.target.value)) {
       return false;
-    }
-    if (!searchTerms.includes(e.target.value)) {
-      return null;
     }
     let query;
     if (e.target.value.length) {
