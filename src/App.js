@@ -183,34 +183,3 @@ class BooksApp extends React.Component {
 
 export default BooksApp;
 
-// x = (state, res) => {
-//   let { books } = state
-
-//   let xrs = res.reduce((acc, curr) => {
-
-//     let add = books.find(bk => bk.id === curr.id)
-//     if(!add) {
-//       acc[curr.id] = curr
-//     }
-//     return acc
-//   }, {})
-
-//   // console.log("xrs:", xrs)
-//   // console.log("Obj-xrs:", Object.values(xrs))
-//   // let xmm = Object.values(xrs)
-//   return xrs
-// }
-
-// xtractr = (books, res) => {
-//   // let { books } = state;
-
-//   let xrs = res.reduce((acc, curr) => {
-//     let add = books.find(bk => bk.id === curr.id);
-//     if (!add) {
-//       acc.push(curr);
-//     }
-//     return acc;
-//   }, []);
-
-//   return xrs;
-// };

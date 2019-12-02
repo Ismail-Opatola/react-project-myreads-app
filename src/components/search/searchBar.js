@@ -36,16 +36,3 @@ class searchBar extends React.Component  {
 
 export {searchTerms, searchBar};
 
-  // state = {
-  //   query : ''
-  // }
-
-  // handleQuery = () => {
-  //   const { query } = this.state
-  //   const { search } = this.props
-  //   if (query !== '' || query !== ' '){
-  //     search(query)
-  //   } else {
-  //     return null
-  //   }
-  // }
