@@ -95,6 +95,7 @@ body, .app {
 .open-search:hover, 
 .close-search:hover {
   background-color: rgb(0, 102, 44);
+  color: #fff;
 }
 
 
@@ -113,7 +114,7 @@ body, .app {
 .search-books-input-wrapper {
   flex: 1;
   background: #10a066;
-  color: inherit;
+  color: #fff;
 }
 
 .search-books-bar input {
