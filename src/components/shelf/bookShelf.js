@@ -25,7 +25,7 @@ const bookShelf = ({ books, switcher }) => {
             <h2 className="bookshelf-title">Currently Reading</h2>
             <div className="bookshelf-books">
               <ol className="books-grid">
-                <Books books={currentlyReading} switchShelf={switcher}/>
+                <Books books={currentlyReading} switchShelf={switcher} />
               </ol>
             </div>
           </div>
@@ -33,7 +33,7 @@ const bookShelf = ({ books, switcher }) => {
             <h2 className="bookshelf-title">Want to Read</h2>
             <div className="bookshelf-books">
               <ol className="books-grid">
-                <Books books={wantToRead} switchShelf={switcher}/>
+                <Books books={wantToRead} switchShelf={switcher} />
               </ol>
             </div>
           </div>
@@ -41,7 +41,7 @@ const bookShelf = ({ books, switcher }) => {
             <h2 className="bookshelf-title">Read</h2>
             <div className="bookshelf-books">
               <ol className="books-grid">
-                <Books books={read} switchShelf={switcher}/>
+                <Books books={read} switchShelf={switcher} />
               </ol>
             </div>
           </div>
@@ -55,4 +55,3 @@ const bookShelf = ({ books, switcher }) => {
 };
 
 export default bookShelf;
-

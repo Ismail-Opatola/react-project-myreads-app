@@ -5,11 +5,11 @@ const searchTerms = [ "Android", "Art", "Artificial Intelligence", "Astronomy", 
 class searchBar extends React.Component  {
 
   render() {
-    const { search, CloseSearchPage } = this.props
+    const { search, CloseSearchPage, redirect } = this.props
 
     return (
       <div className="search-books-bar">
-        <CloseSearch CloseSearchPage={CloseSearchPage}/>
+        <CloseSearch CloseSearchPage={CloseSearchPage} redirect={redirect}/>
         <div className="search-books-input-wrapper">
           {/*
             NOTES: The search from BooksAPI is limited to a particular set of search terms.

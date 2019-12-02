@@ -1,10 +1,12 @@
 import React from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
-const closeSearch = ({ CloseSearchPage }) => {
+const closeSearch = ({ CloseSearchPage, redirect }) => {
+  if (redirect) return <Redirect to="/" />;
+
   return (
     <div onClick={() => CloseSearchPage()}>
-      <Link className="close-search" to="/" alt="home">🡠</Link>
+      <div className="close-search">🡠</div>
     </div>
   );
 };

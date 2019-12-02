@@ -4,13 +4,15 @@ import * as BooksAPI from "./BooksAPI";
 import BookShelf from "./components/shelf/bookShelf";
 import "./App.css";
 import SearchBooks from "./components/search/searchBooks";
-import {searchTerms} from './components/search/searchBar';
+import { searchTerms } from "./components/search/searchBar";
 // import MessageBox from './components/messageBox'
 
 class BooksApp extends React.Component {
   state = {
     books: [],
-    searchResults: []
+    searchResults: [],
+    loading: false,
+    redirect: false
   };
 
   componentDidMount() {
@@ -18,18 +20,24 @@ class BooksApp extends React.Component {
       .then(bks =>
         this.setState(() => ({
           books: [...bks],
-          searchResults: []
+          searchResults: [],
+          loading: false
         }))
       )
       .catch(err => {
+        this.setState({ loading: false });
         throw new Error("BooksAPI.getAll: " + err.stack);
       });
 
-      // this.message('Welcome')
+    // this.message('Welcome')
   }
 
+  handleLoading = () => {
+    this.setState({ loading: true });
+  };
+
   // message = (msg) => {
-  //   return <MessageBox message={msg} /> 
+  //   return <MessageBox message={msg} />
   // }
 
   xtract = (books, res) => {
@@ -50,7 +58,7 @@ class BooksApp extends React.Component {
     console.log("x-books:", books);
     return bks;
   };
-  
+
   xtractSearchResult = (books, res) => {
     let xrs = res.reduce((acc, curr) => {
       let add = books.find(bk => bk.id === curr.id);
@@ -66,50 +74,57 @@ class BooksApp extends React.Component {
     return xrs;
   };
 
-  resetSR = () => {
-    this.setState(state => ({
-      searchResults: []
-    }));
-  }
+  resetSR = async() => {
 
-  handleCloseSearch = () => {
-    this.resetSR()
-    // this.shouldComponentUpdate()
+    return this.setState(state => ({
+      searchResults: [],
+      redirect: true
+    }));
   };
 
-  handleSwitcherFromSRPage = async(book, e) => {
+  handleCloseSearch = () => {
+    this.resetSR().then(() => {
+      this.setState({redirect: false})
+      window.location.reload()
+    });
+    return 
+  };
+
+  handleSwitcherFromSRPage = async (book, e) => {
     e.preventDefault();
     const shelf = e.target.value;
 
     try {
-      const res = await BooksAPI.update(book, shelf)
+      const res = await BooksAPI.update(book, shelf);
       await this.setState(state => {
-        const bk = [...this.xtract(state.books, res)]
+        const bk = [...this.xtract(state.books, res)];
         if (bk.includes(book)) {
-          console.log("state includes this book", book)
-          return {books: [...bk]}
+          console.log("state includes this book", book);
+          return { books: [...bk], loading: false };
         } else if (!bk.includes(book)) {
-          console.log("state does not includes this book", book)
-          return {books: [book, ...state.books]}
+          console.log("state does not includes this book", book);
+          return { books: [book, ...state.books], loading: false };
         }
       });
-    } catch(err) {
+    } catch (err) {
       throw new Error("BooksAPI.updateSwitch SRPage: " + err.stack);
     }
-  }
+  };
 
   handleShelfSwitcher = (book, e) => {
     e.preventDefault();
     const shelf = e.target.value;
-    if (shelf === 'none') {
+    if (shelf === "none") {
       this.setState(state => ({
-        books: state.books.filter(bk => bk !== book)
-      }))
+        books: state.books.filter(bk => bk !== book),
+        loading: false
+      }));
     } else {
       BooksAPI.update(book, shelf)
         .then(res => {
           this.setState(state => ({
-            books: [...this.xtract(state.books, res)]
+            books: [...this.xtract(state.books, res)],
+            loading: false
           }));
         })
         .catch(err => {
@@ -135,7 +150,8 @@ class BooksApp extends React.Component {
           let x = this.xtractSearchResult(state.books, res);
           return {
             books: [...state.books],
-            searchResults: [...x]
+            searchResults: [...x],
+            loading: false
           };
         });
       })
@@ -145,11 +161,12 @@ class BooksApp extends React.Component {
   };
 
   render() {
-    const { books, searchResults } = this.state;
+    const { books, searchResults, redirect } = this.state;
 
     const isLoading = books.length === 0 && (
       <div className="isLoading">Loading...</div>
     );
+
 
     return (
       <div className="app">
@@ -167,6 +184,9 @@ class BooksApp extends React.Component {
               path="/search"
               render={() => (
                 <SearchBooks
+                redirect={redirect}
+                  isLoading={this.state.loading}
+                  setLoading={this.handleLoading}
                   books={searchResults}
                   switcherShelf={this.handleSwitcherFromSRPage}
                   searcher={this.handleSearch}
@@ -182,4 +202,3 @@ class BooksApp extends React.Component {
 }
 
 export default BooksApp;
-
