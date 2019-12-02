@@ -7,7 +7,8 @@ body {
 }
 
 body, .app {
-  background: white;
+  background-color: rgb(24, 26, 27);
+  color: #E8E6E3;
 }
 
 /* Loading */
