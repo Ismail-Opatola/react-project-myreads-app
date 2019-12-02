@@ -74,7 +74,7 @@ class BooksApp extends React.Component {
 
   handleCloseSearch = () => {
     this.resetSR()
-    this.shouldComponentUpdate()
+    // this.shouldComponentUpdate()
   };
 
   handleSwitcherFromSRPage = async(book, e) => {
